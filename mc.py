@@ -17,7 +17,7 @@ import irreverisble
 
 def plotSingle2D(comp,xtitle,ytitle,xscale,yscale):
 
-	exp = []
+	exp = []                           # ***** target 
 	exp = np.loadtxt('ref/850-30.dat')
 
 	fig, ax = plt.subplots(figsize=(12, 9))
@@ -38,26 +38,27 @@ def plotSingle2D(comp,xtitle,ytitle,xscale,yscale):
 	plt.show()
 
 
-
+# --------------- material properties
 T_service = 1123 
 prec_stress = 50 
 SS_stress = 400
 
+# -------------- number samples, =1 in this case
 no_samples = 1
 
 # ============================== objective
-# ============================== optimize these two parameters
+# optimize these two parameters (model_parameters)
+# to minimize the error between [exp] and [stress_strain]
+# ==============================
 model_parameters = (-180, 3.077) 
 
 
+# the function, irreverisble.mechanics, is used to calculate the stress-strain curve in plastic deforamtion region 
+# the outputs are 2D list (stress-strain, stress_strain) and 1 parameter (work to necking, WTN)
 stress_strain, WTN = irreverisble.mechanics(prec_stress,SS_stress,T_service,model_parameters,no_samples)
-print stress_strain,len(stress_strain)
-
 stress_strain = np.array(np.trim_zeros(stress_strain)).reshape(-1,2)
 
 
 plotSingle2D(stress_strain,'strain','stress','linear','linear')
 
-
-print 'UTS, MPa: ',stress_strain[-1,0],'  Strain_UTS, %:',stress_strain[-1,1],'   Work to Necking:', WTN
 
